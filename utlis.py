@@ -1,12 +1,21 @@
 import numpy as np
 import pandas as pd 
 import math
+General_TillingFrequency = np.loadtxt('Corteva/BMP_Matlab_Code/Tilling_Data.txt')
+Herbicide_data = np.loadtxt('Corteva/BMP_Matlab_Code/Herbicide_Data.txt')
+
+tmp = pd.read_csv('Weed_Resistance_Data.csv', sep = ',', header=None)
+params_in = list(tmp[:21][0])
+
+
+params_in = np.array(params_in)
+
 
 class General:
     def __init__(self,params_in):
         self.nsim = params_in[0]             #number of simulations
         self.nYears = params_in[1]               #number of years
-        self.nCohorts = 4#params_in[2]             #number of cohorts
+        self.nCohorts = 2#params_in[2]             #number of cohorts
         self.nLoci = params_in[3]                            #number of gene loci
         self.nGeno = math.pow(3,self.nLoci)             #number of genotypes
         self.fieldSize = params_in[4]           #field size
@@ -411,7 +420,30 @@ def competition(oldPop,A,B,C):
 
     return newPop
 
+class PrepareParams(P):
+    def __init__(self):
+        self.General = General(params_in)
+        self.Init = Init(params_in)
+        self.Germination = Germination(tmp)
+        self.Cultivation = Cultivation(tmp)
+        self.Hand = Hand(tmp)
+        self.Mature = Mature(tmp)
+        self.SeedProd = SeedProd(tmp)
+        self.Mutation = Mutation(tmp)
+        self.Predation = Predation(tmp)
+        self.Winter = Winter(tmp)
+        self.Herbicide1 = Herbicide1(Herbicide_data)
+        self.Herbicide2 = Herbicide2(Herbicide_data)
+        self.Herbicide3 = Herbicide3(Herbicide_data)
+        self.Herbicide4 = Herbicide4(Herbicide_data)
+        self.nLoci = int(self.General.nLoci)
+        self.nGeno = int(self.General.nGeno)
+        self.key, self.key_text = self.generate_key()
+        self.General.UpperSeedBank = self.matingEquilibrium(self.Init.Upper.ResAlleleFreq,self.key)*self.Init.Upper.seedDensity
+        self.General.LowerSeedBank = self.matingEquilibrium(self.Init.Lower.ResAlleleFreq,self.key)*self.Init.Lower.seedDensity 
 
+
+Params = PrepareParams()
 def mating(population,s,key):
 
     nLoci,nGeno = key.shape
@@ -478,3 +510,80 @@ def mutation(population,muS2R,muR2S,targetLocus,key):
         population = mutatedPopulation
 
     return mutatedPopulation
+
+'''Call initialization functions
+
+Variable input
+varargin can contain the structure array Params, if it has been previously
+created. This saves considerable time from having to read the input files
+and create a new structure array.''' 
+
+
+class Population:
+    pass
+Params = PrepareParams()
+nCohorts = int(Params.General.nCohorts)      
+nYears = int(Params.General.nYears)        
+nLoci = int(Params.General.nLoci)               
+nGeno = int(Params.General.nGeno)              
+fieldSize = int(Params.General.fieldSize)     
+
+'''Structure array for storing various life-cycle stages seed bank'''
+Population.seedBank = np.zeros((nYears,nGeno,nCohorts))
+
+# %Lower seed bank density
+Population.lowerBank = np.zeros((nYears,nGeno))
+
+# %immigrant seed
+Population.immSeed = np.zeros((nYears,nGeno,nCohorts))
+
+# %emigrant seed
+Population.emSeed = np.zeros((nYears,nGeno,nCohorts))
+
+# %germination storage
+Population.germination = np.zeros((nYears,nGeno,nCohorts))
+
+# %ungerminated storage
+Population.ungerminated = np.zeros((nYears,nGeno,nCohorts))
+
+
+Population.herbicide1 = np.zeros((nYears,nGeno,nCohorts))
+Population.herbicide2 = np.zeros((nYears,nGeno,nCohorts))
+Population.herbicide3 = np.zeros((nYears,nGeno,nCohorts))
+Population.herbicide4 = np.zeros((nYears,nGeno,nCohorts))
+Population.seedProd = np.zeros((nYears,nGeno,nCohorts))
+
+Population.mature = np.zeros((nYears,nGeno,nCohorts))
+
+
+Population.hand = np.zeros((nYears,nGeno,nCohorts))
+
+
+Population.immPol = np.zeros((nYears,nGeno,nCohorts))
+
+
+Population.emPol = np.zeros((nYears,nGeno,nCohorts))
+
+
+Population.newSeed = np.zeros((nYears,nGeno,nCohorts))
+
+
+Population.mutated = np.zeros((nYears,nGeno,nCohorts))
+
+
+Population.predation = np.zeros((nYears,nGeno,nCohorts))
+
+
+Population.winter = np.zeros((nYears,nGeno))
+
+
+Population.Res = np.zeros((1, 3))
+
+'''Final initialization steps
+
+Put the SeedBank array from the initialization functions into the
+population.seedBank array for year 1, all genotypes, and cohort 1'''
+
+Population.seedBank[0,:,0] = Params.General.UpperSeedBank
+Population.lowerBank[0,:] = Params.General.LowerSeedBank
+
