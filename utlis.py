@@ -15,7 +15,7 @@ class General:
     def __init__(self,params_in):
         self.nsim = params_in[0]             #number of simulations
         self.nYears = params_in[1]               #number of years
-        self.nCohorts = 2#params_in[2]             #number of cohorts
+        self.nCohorts = 1#params_in[2]             #number of cohorts
         self.nLoci = params_in[3]                            #number of gene loci
         self.nGeno = math.pow(3,self.nLoci)             #number of genotypes
         self.fieldSize = params_in[4]           #field size
