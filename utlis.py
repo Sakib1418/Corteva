@@ -345,9 +345,6 @@ def seedImmigration(nGeno):
     return seedIN
 
 def extinction(oldPopulation,fieldSize):
-    # print("shape of oldpop from extinction: ", oldPopulation.shape)
-
-
     if fieldSize == math.inf:
         newPopulation = oldPopulation
     elif fieldSize == 0:
@@ -356,7 +353,6 @@ def extinction(oldPopulation,fieldSize):
         nGeno = int(len(oldPopulation))
         rndExtinct = np.random.rand(nGeno)
         newPopulation = np.zeros(nGeno)
-
         for i in range(nGeno):
             if oldPopulation[i] == 0:
                 newPopulation[i] =0
@@ -366,14 +362,10 @@ def extinction(oldPopulation,fieldSize):
                 newPopulation[i] = 1/fieldSize
             else:
                 newPopulation[i] = 0
-
     return newPopulation
 
 def survival(oldPopulation,fSurvival):
-
     newPopulation = fSurvival*oldPopulation
-
-
     return newPopulation
 
 def selectiveSurvival(oldPop,fSurvival,targetLocus,key):
@@ -384,11 +376,11 @@ def selectiveSurvival(oldPop,fSurvival,targetLocus,key):
     else:
         for i in range(int(nGeno)):
             if key[targetLocus-1][i] == 0:
-                newPop[i] = fSurvival[0]*oldPop[i]
+                newPop[i] = float(float(fSurvival[0])*float(oldPop[i]))
             elif key[targetLocus-1][i] == 1:
-                newPop[i] = fSurvival[1]*oldPop[i]
+                newPop[i] = float(float(fSurvival[1])*float(oldPop[i]))
             else: 
-                newPop[i] = fSurvival[2]*oldPop[i]
+                newPop[i] = float(float(fSurvival[2])*float(oldPop[i]))
     return newPop
 
 def competition(oldPop,A,B,C):
@@ -405,7 +397,7 @@ def competition(oldPop,A,B,C):
         newPop = [i/b for i in a] 
 
 
-    elif isinstance(oldPop,float):
+    else:
         
         totalPop = oldPop
         a = A*oldPop
@@ -413,9 +405,6 @@ def competition(oldPop,A,B,C):
         
 
         newPop = a/b
-
-    else:
-        pass
 
 
     return newPop
@@ -444,6 +433,7 @@ class PrepareParams(P):
 
 
 Params = PrepareParams()
+
 def mating(population,s,key):
 
     nLoci,nGeno = key.shape
@@ -477,7 +467,6 @@ def mating(population,s,key):
     name = './Corteva/BMP_Matlab_Code/' + name
     selfingTable = np.array(pd.read_csv(name, sep=',', header=None))
     newFracself = np.matmul(population,selfingTable)
-    s = Params.General.selfingCoeff
     newFrac = s*newFracself + (1-s)*newFracOut
 
     return newFrac
