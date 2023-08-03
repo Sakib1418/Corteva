@@ -15,7 +15,7 @@ class General:
     def __init__(self,params_in):
         self.nsim = params_in[0]             #number of simulations
         self.nYears = params_in[1]               #number of years
-        self.nCohorts = 1#params_in[2]             #number of cohorts
+        self.nCohorts = 2#params_in[2]             #number of cohorts
         self.nLoci = params_in[3]                            #number of gene loci
         self.nGeno = math.pow(3,self.nLoci)             #number of genotypes
         self.fieldSize = params_in[4]           #field size
@@ -576,3 +576,11 @@ population.seedBank array for year 1, all genotypes, and cohort 1'''
 Population.seedBank[0,:,0] = Params.General.UpperSeedBank
 Population.lowerBank[0,:] = Params.General.LowerSeedBank
 
+# from itertools import pairwise
+
+# def area_trapezoid(xs, ys):
+#     area = 0
+#     for (ax, ay), (bx, by) in pairwise(zip(xs, ys)):
+#         h = bx - ax
+#         area += h*(ay + by)/2
+#     return area
