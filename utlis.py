@@ -15,16 +15,19 @@ class General:
     def __init__(self,params_in):
         self.nsim = params_in[0]             #number of simulations
         self.nYears = params_in[1]               #number of years
-        self.nCohorts = 1#params_in[2]             #number of cohorts
+        self.nCohorts = 2#params_in[2]             #number of cohorts
         self.nLoci = params_in[3]                            #number of gene loci
         self.nGeno = math.pow(3,self.nLoci)             #number of genotypes
         self.fieldSize = params_in[4]           #field size
         self.selfingCoeff = params_in[5]         #selfing coefficient 
         self.seedDelay = params_in[6]          #seed delay
         self.femaleFrac = params_in[7]
-        self.f_RO = params_in[18]          #latent time
-        self.f_CR = params_in[19]     #critical response
-        self.f_TR = params_in[20]
+        # self.f_RO = params_in[18]          #latent time
+        # self.f_CR = params_in[19]     #critical response
+        # self.f_TR = params_in[20]
+        self.f_RO = 6          #latent time
+        self.f_CR = 7.1    #critical response
+        self.f_TR = 14.4       
         self.currentYear = 1
         self.currentCohort = 1
         self.TillingFreq = np.loadtxt('./Corteva/BMP_Matlab_Code/Tilling_Data.txt')
@@ -331,6 +334,8 @@ class P:
                     populationFraction_outCross[0][k] = populationFraction_outCross[0][k] *(math.pow(q[j],2))
 
         return populationFraction_outCross[0]
+    
+
 def deepTill(upperbank,lowerbank,tillFrequency,currentYear):
     if tillFrequency[currentYear] ==1:
         tmp = upperbank
