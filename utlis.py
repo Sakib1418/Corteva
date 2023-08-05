@@ -15,19 +15,20 @@ class General:
     def __init__(self,params_in):
         self.nsim = params_in[0]             #number of simulations
         self.nYears = params_in[1]               #number of years
-        self.nCohorts = 2#params_in[2]             #number of cohorts
+        self.nCohorts = 1#params_in[2]             #number of cohorts
         self.nLoci = params_in[3]                            #number of gene loci
         self.nGeno = math.pow(3,self.nLoci)             #number of genotypes
         self.fieldSize = params_in[4]           #field size
         self.selfingCoeff = params_in[5]         #selfing coefficient 
-        self.seedDelay = params_in[6]          #seed delay
+        # self.seedDelay = params_in[6]
+        self.seedDelay = np.float64(0)          #seed delay
         self.femaleFrac = params_in[7]
         # self.f_RO = params_in[18]          #latent time
         # self.f_CR = params_in[19]     #critical response
         # self.f_TR = params_in[20]
-        self.f_RO = 6          #latent time
-        self.f_CR = 7.1    #critical response
-        self.f_TR = 14.4       
+        self.f_RO = 6.1          #latent time
+        self.f_CR = 8.5   #critical response
+        self.f_TR = 11.4      
         self.currentYear = 1
         self.currentCohort = 1
         self.TillingFreq = np.loadtxt('./Corteva/BMP_Matlab_Code/Tilling_Data.txt')
@@ -40,9 +41,11 @@ class Init:
     def __init__(self, params_in):
         self.Upper = Upper
         self.Lower = Lower
-        self.Upper.seedDensity = params_in[8]      #initial upper bank density
+        # self.Upper.seedDensity = params_in[8]
+        self.Upper.seedDensity = 100      #initial upper bank density
         self.Lower.seedDensity = params_in[9]       #initial lower bank density
-        self.Upper.ResAlleleFreq = params_in[10:17:2]   #initial upper resistant allele frequency
+        # self.Upper.ResAlleleFreq = params_in[10:17:2]   #initial upper resistant allele frequency
+        self.Upper.ResAlleleFreq = np.array([1e-8,0,0,0])
         self.Lower.ResAlleleFreq = params_in[11:18:2] 
 class Germination:
     def __init__(self, tmp):
